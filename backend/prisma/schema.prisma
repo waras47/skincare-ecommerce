@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  customer
+  admin
+}
+
+enum OrderStatus {
+  pending
+  paid
+  shipped
+  completed
+  cancelled
+  failed
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+}
+
+model User {
+  id           BigInt   @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(customer)
+  skinType     String?  @map("skin_type")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  addresses Address[]
+  cart      Cart?
+  orders    Order[]
+  reviews   Review[]
+  wishlists Wishlist[]
+
+  @@map("users")
+}
+
+model Address {
+  id          BigInt  @id @default(autoincrement())
+  userId      BigInt  @map("user_id")
+  label       String
+  recipient   String
+  phone       String
+  fullAddress String  @map("full_address")
+  city        String
+  postalCode  String  @map("postal_code")
+  isDefault   Boolean @default(false) @map("is_default")
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("addresses")
+}
+
+model Category {
+  id   BigInt @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          BigInt   @id @default(autoincrement())
+  categoryId  BigInt   @map("category_id")
+  name        String
+  slug        String   @unique
+  description String   @db.Text
+  ingredients String   @db.Text
+  skinTypes   Json     @map("skin_types")
+  basePrice   Decimal  @map("base_price") @db.Decimal(10, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  category Category        @relation(fields: [categoryId], references: [id])
+  variants ProductVariant[]
+  images   ProductImage[]
+  reviews  Review[]
+  wishlist Wishlist[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id          BigInt  @id @default(autoincrement())
+  productId   BigInt  @map("product_id")
+  variantName String  @map("variant_name")
+  sku         String  @unique
+  price       Decimal @db.Decimal(10, 2)
+  stock       Int     @default(0)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@map("product_variants")
+}
+
+model ProductImage {
+  id        BigInt  @id @default(autoincrement())
+  productId BigInt  @map("product_id")
+  url       String
+  isPrimary Boolean @default(false) @map("is_primary")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model SkinQuizQuestion {
+  id      BigInt @id @default(autoincrement())
+  orderNo Int    @map("order_no")
+  text    String
+
+  options SkinQuizOption[]
+
+  @@map("skin_quiz_questions")
+}
+
+model SkinQuizOption {
+  id             BigInt @id @default(autoincrement())
+  questionId     BigInt @map("question_id")
+  text           String
+  skinTypeValue  String @map("skin_type_value")
+
+  question SkinQuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("skin_quiz_options")
+}
+
+model Cart {
+  id     BigInt @id @default(autoincrement())
+  userId BigInt @unique @map("user_id")
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        BigInt @id @default(autoincrement())
+  cartId    BigInt @map("cart_id")
+  variantId BigInt @map("variant_id")
+  qty       Int
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@unique([cartId, variantId])
+  @@map("cart_items")
+}
+
+model Order {
+  id          BigInt      @id @default(autoincrement())
+  userId      BigInt      @map("user_id")
+  addressId   BigInt      @map("address_id")
+  status      OrderStatus @default(pending)
+  totalAmount Decimal     @map("total_amount") @db.Decimal(10, 2)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  user    User        @relation(fields: [userId], references: [id])
+  address Address     @relation(fields: [addressId], references: [id])
+  items   OrderItem[]
+  payment Payment?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        BigInt  @id @default(autoincrement())
+  orderId   BigInt  @map("order_id")
+  variantId BigInt  @map("variant_id")
+  qty       Int
+  price     Decimal @db.Decimal(10, 2)
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+  review  Review?
+
+  @@map("order_items")
+}
+
+model Payment {
+  id      BigInt        @id @default(autoincrement())
+  orderId BigInt        @unique @map("order_id")
+  method  String
+  status  PaymentStatus @default(pending)
+  paidAt  DateTime?     @map("paid_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Review {
+  id          BigInt   @id @default(autoincrement())
+  productId   BigInt   @map("product_id")
+  userId      BigInt   @map("user_id")
+  orderItemId BigInt   @unique @map("order_item_id")
+  rating      Int
+  comment     String   @db.Text
+  isApproved  Boolean  @default(true) @map("is_approved")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+
+  @@map("reviews")
+}
+
+model Wishlist {
+  id        BigInt @id @default(autoincrement())
+  userId    BigInt @map("user_id")
+  productId BigInt @map("product_id")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlists")
+}
