@@ -9,6 +9,12 @@ export const catalogController = {
     res.json({ success: true, data: result });
   },
 
+  async listTrending(req: Request, res: Response) {
+    const limit = Math.min(Number(req.query.limit) || 8, 20);
+    const products = await catalogService.listTrending(limit);
+    res.json({ success: true, data: products });
+  },
+
   async getProduct(req: Request, res: Response) {
     const product = await catalogService.getProductBySlug(req.params.slug as string);
     res.json({ success: true, data: product });
@@ -17,6 +23,11 @@ export const catalogController = {
   async listCategories(_req: Request, res: Response) {
     const categories = await catalogService.listCategories();
     res.json({ success: true, data: categories });
+  },
+
+  async listAllForAdmin(_req: Request, res: Response) {
+    const products = await catalogService.listAllForAdmin();
+    res.json({ success: true, data: products });
   },
 
   async createCategory(req: Request, res: Response) {

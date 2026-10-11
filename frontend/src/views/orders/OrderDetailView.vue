@@ -75,7 +75,7 @@ async function submitReview(orderItemId: string) {
     <section class="bg-white rounded-lg p-4 shadow-sm mb-4">
       <div class="flex justify-between font-medium">
         <span>Total</span>
-        <span class="text-rose-600">{{ formatRupiah(Number(orderStore.current.totalAmount)) }}</span>
+        <span class="text-brand-600">{{ formatRupiah(Number(orderStore.current.totalAmount)) }}</span>
       </div>
       <p v-if="orderStore.current.payment" class="text-xs text-gray-400 mt-1">
         Pembayaran: {{ orderStore.current.payment.method }} &middot; {{ orderStore.current.payment.status }}

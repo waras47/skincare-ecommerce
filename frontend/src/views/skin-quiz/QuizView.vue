@@ -41,7 +41,7 @@ async function onSubmit() {
 
       <button
         :disabled="!allAnswered || quizStore.isLoading"
-        class="w-full bg-rose-600 text-white rounded py-3 font-medium disabled:opacity-50"
+        class="w-full bg-brand-600 text-white rounded py-3 font-medium disabled:opacity-50"
         @click="onSubmit"
       >
         {{ quizStore.isLoading ? "Memproses..." : "Lihat Hasil" }}
@@ -50,7 +50,7 @@ async function onSubmit() {
 
     <div v-else class="text-center">
       <p class="text-gray-500">Jenis kulitmu:</p>
-      <p class="text-2xl font-bold text-rose-600 capitalize mb-6">{{ quizStore.result.skinType }}</p>
+      <p class="text-2xl font-bold text-brand-600 capitalize mb-6">{{ quizStore.result.skinType }}</p>
 
       <h2 class="text-left font-medium mb-3">Rekomendasi produk</h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">

@@ -2,10 +2,12 @@
 import { onMounted, reactive, ref } from "vue";
 import { catalogApi } from "@/api/endpoints/catalog.api";
 import type { Category } from "@/types";
+import BaseModal from "@/components/ui/BaseModal.vue";
 
 const categories = ref<Category[]>([]);
 const form = reactive({ id: "", name: "", slug: "" });
 const error = ref<string | null>(null);
+const showModal = ref(false);
 
 async function load() {
   const res = await catalogApi.listCategories();
@@ -13,16 +15,24 @@ async function load() {
 }
 onMounted(load);
 
-function edit(category: Category) {
-  form.id = category.id;
-  form.name = category.name;
-  form.slug = category.slug;
-}
-
 function resetForm() {
   form.id = "";
   form.name = "";
   form.slug = "";
+}
+
+function openCreate() {
+  resetForm();
+  error.value = null;
+  showModal.value = true;
+}
+
+function openEdit(category: Category) {
+  form.id = category.id;
+  form.name = category.name;
+  form.slug = category.slug;
+  error.value = null;
+  showModal.value = true;
 }
 
 async function submit() {
@@ -31,7 +41,7 @@ async function submit() {
     ? await catalogApi.updateCategory(form.id, { name: form.name, slug: form.slug })
     : await catalogApi.createCategory({ name: form.name, slug: form.slug });
   if (res.ok) {
-    resetForm();
+    showModal.value = false;
     load();
   } else {
     error.value = res.error;
@@ -47,21 +57,10 @@ async function remove(id: string) {
 
 <template>
   <div>
-    <h1 class="text-xl font-semibold mb-6">Kategori</h1>
-
-    <form class="bg-white rounded-lg p-4 shadow-sm flex gap-3 items-end mb-6" @submit.prevent="submit">
-      <label class="flex flex-col gap-1 text-sm">
-        Nama
-        <input v-model="form.name" required class="border rounded px-3 py-2" />
-      </label>
-      <label class="flex flex-col gap-1 text-sm">
-        Slug
-        <input v-model="form.slug" required class="border rounded px-3 py-2" />
-      </label>
-      <button class="bg-rose-600 text-white rounded px-4 py-2 text-sm">{{ form.id ? "Update" : "Tambah" }}</button>
-      <button v-if="form.id" type="button" class="text-sm text-gray-500" @click="resetForm">Batal</button>
-    </form>
-    <p v-if="error" class="text-sm text-red-600 mb-4">{{ error }}</p>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-xl font-semibold">Kategori</h1>
+      <button class="bg-brand-600 text-white rounded px-4 py-2 text-sm" @click="openCreate">+ Tambah Kategori</button>
+    </div>
 
     <table class="w-full bg-white rounded-lg shadow-sm text-sm">
       <thead>
@@ -76,11 +75,29 @@ async function remove(id: string) {
           <td class="p-3">{{ c.name }}</td>
           <td class="p-3">{{ c.slug }}</td>
           <td class="p-3 text-right space-x-2">
-            <button class="text-blue-600" @click="edit(c)">Edit</button>
+            <button class="text-blue-600" @click="openEdit(c)">Edit</button>
             <button class="text-red-600" @click="remove(c.id)">Hapus</button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <BaseModal :show="showModal" :title="form.id ? 'Edit Kategori' : 'Tambah Kategori'" @close="showModal = false">
+      <form class="flex flex-col gap-3" @submit.prevent="submit">
+        <label class="flex flex-col gap-1 text-sm">
+          Nama
+          <input v-model="form.name" required class="border rounded px-3 py-2" />
+        </label>
+        <label class="flex flex-col gap-1 text-sm">
+          Slug
+          <input v-model="form.slug" required class="border rounded px-3 py-2" />
+        </label>
+        <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+        <div class="flex gap-2">
+          <button class="bg-brand-600 text-white rounded px-4 py-2 text-sm">{{ form.id ? "Update" : "Tambah" }}</button>
+          <button type="button" class="text-sm text-gray-500" @click="showModal = false">Batal</button>
+        </div>
+      </form>
+    </BaseModal>
   </div>
 </template>

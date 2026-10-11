@@ -12,6 +12,12 @@ export const reviewsController = {
     res.json({ success: true, data: reviews });
   },
 
+  async listRecent(req: Request, res: Response) {
+    const limit = Math.min(Number(req.query.limit) || 6, 20);
+    const reviews = await reviewsService.listRecent(limit);
+    res.json({ success: true, data: reviews });
+  },
+
   async listAll(_req: Request, res: Response) {
     const reviews = await reviewsService.listAll();
     res.json({ success: true, data: reviews });

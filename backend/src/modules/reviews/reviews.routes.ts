@@ -6,6 +6,7 @@ import { validateBody } from "../../middleware/validate";
 import { createReviewSchema, setApprovedSchema } from "./reviews.schema";
 
 export const reviewsRouter = Router();
+reviewsRouter.get("/recent", asyncHandler(reviewsController.listRecent));
 reviewsRouter.get("/product/:productId", asyncHandler(reviewsController.listByProduct));
 reviewsRouter.post("/", authenticate, validateBody(createReviewSchema), asyncHandler(reviewsController.create));
 

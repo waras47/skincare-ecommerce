@@ -84,7 +84,7 @@ async function submitOrder() {
         </div>
       </div>
 
-      <button class="text-rose-600 text-sm mt-2" @click="showNewAddress = !showNewAddress">
+      <button class="text-brand-600 text-sm mt-2" @click="showNewAddress = !showNewAddress">
         + Tambah alamat baru
       </button>
 
@@ -113,7 +113,7 @@ async function submitOrder() {
       <h2 class="font-medium mb-3">Ringkasan</h2>
       <div class="flex justify-between text-sm font-medium">
         <span>Total</span>
-        <span class="text-rose-600">{{ formatRupiah(cartStore.subtotal) }}</span>
+        <span class="text-brand-600">{{ formatRupiah(cartStore.subtotal) }}</span>
       </div>
     </section>
 
@@ -121,7 +121,7 @@ async function submitOrder() {
 
     <button
       :disabled="isSubmitting || !cartStore.cart?.items.length"
-      class="w-full bg-rose-600 text-white rounded py-3 font-medium disabled:opacity-50"
+      class="w-full bg-brand-600 text-white rounded py-3 font-medium disabled:opacity-50"
       @click="submitOrder"
     >
       {{ isSubmitting ? "Memproses..." : "Bayar Sekarang" }}

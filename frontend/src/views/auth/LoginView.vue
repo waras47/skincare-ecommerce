@@ -35,12 +35,12 @@ async function onSubmit() {
       <input v-model="form.password" type="password" required class="border rounded px-3 py-2" />
     </label>
 
-    <button type="submit" :disabled="isSubmitting" class="bg-rose-600 text-white rounded py-2 font-medium disabled:opacity-50">
+    <button type="submit" :disabled="isSubmitting" class="bg-brand-600 text-white rounded py-2 font-medium disabled:opacity-50">
       {{ isSubmitting ? "Memproses..." : "Masuk" }}
     </button>
 
     <p class="text-sm text-center text-gray-500">
-      Belum punya akun? <router-link to="/register" class="text-rose-600 underline">Daftar</router-link>
+      Belum punya akun? <router-link to="/register" class="text-brand-600 underline">Daftar</router-link>
     </p>
     <p class="text-xs text-center text-gray-400">
       Demo: admin@skincare.test / Admin123! &middot; dinda@skincare.test / Customer123!

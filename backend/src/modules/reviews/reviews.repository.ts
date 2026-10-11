@@ -20,6 +20,15 @@ export const reviewsRepository = {
     });
   },
 
+  listRecentApproved(limit: number) {
+    return prisma.review.findMany({
+      where: { isApproved: true },
+      include: { user: { select: { name: true } }, product: { select: { name: true, slug: true } } },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  },
+
   listAll() {
     return prisma.review.findMany({
       include: { user: { select: { name: true } }, product: { select: { name: true } } },

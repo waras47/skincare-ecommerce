@@ -10,6 +10,7 @@ import { adminOrdersRouter, ordersRouter } from "./modules/orders/orders.routes"
 import { adminReviewsRouter, reviewsRouter } from "./modules/reviews/reviews.routes";
 import { wishlistRouter } from "./modules/wishlist/wishlist.routes";
 import { adminUsersRouter, usersRouter } from "./modules/users/users.routes";
+import { adminDashboardRouter } from "./modules/dashboard/dashboard.routes";
 
 export const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/admin/skin-quiz", adminSkinQuizRouter);
 app.use("/api/admin/orders", adminOrdersRouter);
 app.use("/api/admin/reviews", adminReviewsRouter);
 app.use("/api/admin/users", adminUsersRouter);
+app.use("/api/admin/dashboard", adminDashboardRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -27,6 +27,10 @@ export const reviewsService = {
     return reviewsRepository.listByProduct(BigInt(productId));
   },
 
+  listRecent(limit: number) {
+    return reviewsRepository.listRecentApproved(limit);
+  },
+
   listAll() {
     return reviewsRepository.listAll();
   },

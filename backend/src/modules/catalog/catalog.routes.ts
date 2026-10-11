@@ -17,6 +17,7 @@ import {
 
 export const productsRouter = Router();
 productsRouter.get("/", validateQuery(listProductsQuerySchema), asyncHandler(catalogController.listProducts));
+productsRouter.get("/trending", asyncHandler(catalogController.listTrending));
 productsRouter.get("/:slug", asyncHandler(catalogController.getProduct));
 
 export const categoriesRouter = Router();
@@ -25,6 +26,7 @@ categoriesRouter.get("/", asyncHandler(catalogController.listCategories));
 const adminOnly = [authenticate, requireRole("admin")];
 
 export const adminProductsRouter = Router();
+adminProductsRouter.get("/", ...adminOnly, asyncHandler(catalogController.listAllForAdmin));
 adminProductsRouter.post(
   "/",
   ...adminOnly,

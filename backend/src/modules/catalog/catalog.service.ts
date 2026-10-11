@@ -23,6 +23,10 @@ export const catalogService = {
     });
   },
 
+  listTrending(limit: number) {
+    return catalogRepository.listTrending(limit);
+  },
+
   async getProductBySlug(slug: string) {
     const product = await catalogRepository.getProductBySlug(slug);
     if (!product) throw new AppError(404, "Product not found");
@@ -31,6 +35,10 @@ export const catalogService = {
 
   listCategories() {
     return catalogRepository.listCategories();
+  },
+
+  listAllForAdmin() {
+    return catalogRepository.listAllForAdmin();
   },
 
   createCategory(data: { name: string; slug: string }) {

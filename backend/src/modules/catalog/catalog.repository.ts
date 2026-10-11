@@ -70,12 +70,28 @@ export const catalogRepository = {
     };
   },
 
+  // "Trending" = most-reviewed products first (a real signal, not a fabricated
+  // sales-count). Falls back to newest when nothing has reviews yet.
+  listTrending(limit: number) {
+    return prisma.product.findMany({
+      include: productListInclude,
+      orderBy: [{ reviews: { _count: "desc" } }, { createdAt: "desc" }],
+      take: limit,
+    });
+  },
+
   getProductBySlug(slug: string) {
     return prisma.product.findUnique({ where: { slug }, include: productDetailInclude });
   },
 
   getProductById(id: bigint) {
     return prisma.product.findUnique({ where: { id }, include: productDetailInclude });
+  },
+
+  // Admin product table needs full variant/image detail (ids, sku, all images),
+  // unlike the public catalog list which only needs price range + primary image.
+  listAllForAdmin() {
+    return prisma.product.findMany({ include: productDetailInclude, orderBy: { createdAt: "desc" } });
   },
 
   listCategories() {

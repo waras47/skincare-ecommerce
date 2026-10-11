@@ -58,7 +58,7 @@ async function removeAddress(id: string) {
           <input v-model="profileForm.skinType" class="border rounded px-3 py-2" placeholder="isi lewat skin quiz atau manual" />
         </label>
         <p v-if="profileFeedback" class="text-sm text-gray-500">{{ profileFeedback }}</p>
-        <button class="self-start bg-rose-600 text-white rounded px-4 py-2 text-sm">Simpan</button>
+        <button class="self-start bg-brand-600 text-white rounded px-4 py-2 text-sm">Simpan</button>
       </form>
     </section>
 
@@ -72,7 +72,7 @@ async function removeAddress(id: string) {
         <button class="text-gray-400 hover:text-red-600" @click="removeAddress(address.id)">Hapus</button>
       </div>
 
-      <button class="text-rose-600 text-sm mt-3" @click="showNewAddress = !showNewAddress">+ Tambah alamat</button>
+      <button class="text-brand-600 text-sm mt-3" @click="showNewAddress = !showNewAddress">+ Tambah alamat</button>
       <form v-if="showNewAddress" class="grid grid-cols-2 gap-2 mt-3" @submit.prevent="addAddress">
         <input v-model="newAddress.label" placeholder="Label" class="border rounded px-3 py-2 text-sm col-span-2" required />
         <input v-model="newAddress.recipient" placeholder="Nama penerima" class="border rounded px-3 py-2 text-sm col-span-2" required />

@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { onMounted, reactive, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useProductStore } from "@/stores/product.store";
 import ProductCard from "@/components/product/ProductCard.vue";
 
 const productStore = useProductStore();
+const route = useRoute();
 
 const filters = reactive({
-  search: "",
-  category: "",
+  search: typeof route.query.search === "string" ? route.query.search : "",
+  category: typeof route.query.category === "string" ? route.query.category : "",
   skinType: "",
 });
 
@@ -28,6 +30,16 @@ onMounted(() => {
 });
 
 watch(filters, applyFilters);
+
+// Re-sync when navigating here from a navbar category/search link while
+// already on this route (Vue Router reuses the component, no remount).
+watch(
+  () => route.query,
+  (query) => {
+    filters.search = typeof query.search === "string" ? query.search : "";
+    filters.category = typeof query.category === "string" ? query.category : "";
+  },
+);
 </script>
 
 <template>

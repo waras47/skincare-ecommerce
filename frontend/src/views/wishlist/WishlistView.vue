@@ -18,7 +18,7 @@ onMounted(() => wishlistStore.fetch());
       <div v-for="item in wishlistStore.items" :key="item.id" class="relative">
         <ProductCard :product="item.product" />
         <button
-          class="absolute top-2 right-2 bg-white rounded-full w-7 h-7 text-rose-600 shadow"
+          class="absolute top-2 right-2 bg-white rounded-full w-7 h-7 text-brand-600 shadow"
           @click="wishlistStore.remove(item.productId)"
         >
           ✕

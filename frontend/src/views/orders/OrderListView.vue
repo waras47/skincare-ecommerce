@@ -42,7 +42,7 @@ const statusColor: Record<string, string> = {
         <span class="text-xs px-2 py-1 rounded-full" :class="statusColor[order.status]">{{ statusLabel[order.status] }}</span>
       </div>
       <p class="text-xs text-gray-400 mt-1">{{ new Date(order.createdAt).toLocaleString("id-ID") }}</p>
-      <p class="text-rose-600 font-semibold mt-1">{{ formatRupiah(Number(order.totalAmount)) }}</p>
+      <p class="text-brand-600 font-semibold mt-1">{{ formatRupiah(Number(order.totalAmount)) }}</p>
     </router-link>
   </div>
 </template>

@@ -117,12 +117,9 @@ async function main() {
       });
     }
 
-    const hasImage = await prisma.productImage.findFirst({ where: { productId: product.id } });
-    if (!hasImage) {
-      await prisma.productImage.create({
-        data: { productId: product.id, url: `https://picsum.photos/seed/${p.slug}/400/400`, isPrimary: true },
-      });
-    }
+    // No placeholder photo seeded — stock photos don't represent the real
+    // product. Admin uploads the real photo via the Cloudinary upload UI;
+    // until then the storefront shows a neutral placeholder.
   }
 
   const quizData: { orderNo: number; text: string; options: { text: string; skinTypeValue: string }[] }[] = [

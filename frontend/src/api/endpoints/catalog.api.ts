@@ -22,9 +22,12 @@ export const catalogApi = {
 
   getProduct: (slug: string) => safeRequest<Product>(() => client.get(`/products/${slug}`)),
 
+  listTrending: (limit = 8) => safeRequest<Product[]>(() => client.get("/products/trending", { params: { limit } })),
+
   listCategories: () => safeRequest<Category[]>(() => client.get("/categories")),
 
   // admin
+  listAllForAdmin: () => safeRequest<Product[]>(() => client.get("/admin/products")),
   createCategory: (data: { name: string; slug: string }) =>
     safeRequest<Category>(() => client.post("/admin/categories", data)),
   updateCategory: (id: string, data: Partial<{ name: string; slug: string }>) =>

@@ -1,8 +1,10 @@
 import { client, safeRequest } from "../client";
-import type { Review } from "@/types";
+import type { RecentReview, Review } from "@/types";
 
 export const reviewsApi = {
   listByProduct: (productId: string) => safeRequest<Review[]>(() => client.get(`/reviews/product/${productId}`)),
+
+  listRecent: (limit = 6) => safeRequest<RecentReview[]>(() => client.get("/reviews/recent", { params: { limit } })),
 
   create: (data: { orderItemId: string; rating: number; comment: string }) =>
     safeRequest<Review>(() => client.post("/reviews", data)),

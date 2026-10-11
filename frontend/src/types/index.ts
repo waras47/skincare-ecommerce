@@ -49,6 +49,10 @@ export interface Review {
   user: { name: string };
 }
 
+export interface RecentReview extends Review {
+  product: { name: string; slug: string };
+}
+
 export interface Product {
   id: string;
   categoryId: string;
@@ -58,6 +62,7 @@ export interface Product {
   ingredients: string;
   skinTypes: string[];
   basePrice: string;
+  createdAt: string;
   category?: Category;
   images: ProductImage[];
   variants: ProductVariant[];
@@ -129,4 +134,17 @@ export interface SkinQuizQuestion {
 export interface QuizResult {
   skinType: string;
   recommendations: Product[];
+}
+
+export interface DashboardMetric {
+  total: number;
+  last7: number;
+  prev7: number;
+}
+
+export interface DashboardStats {
+  products: DashboardMetric;
+  orders: DashboardMetric;
+  customers: DashboardMetric;
+  revenue: DashboardMetric;
 }
