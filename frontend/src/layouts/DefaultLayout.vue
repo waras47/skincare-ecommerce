@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCartStore } from "@/stores/cart.store";
 import { useProductStore } from "@/stores/product.store";
@@ -10,6 +10,7 @@ const auth = useAuthStore();
 const cart = useCartStore();
 const productStore = useProductStore();
 const router = useRouter();
+const route = useRoute();
 
 const searchQuery = ref("");
 function submitSearch() {
@@ -137,11 +138,16 @@ function logout() {
             v-for="c in productStore.categories"
             :key="c.id"
             :to="{ path: '/products', query: { category: c.slug } }"
-            class="text-gray-600 hover:text-brand-600 whitespace-nowrap"
+            class="whitespace-nowrap hover:text-brand-600"
+            :class="route.path === '/products' && route.query.category === c.slug ? 'text-brand-600' : 'text-gray-600'"
           >
             {{ c.name.toUpperCase() }}
           </router-link>
-          <router-link to="/skin-quiz" class="text-brand-600 hover:text-brand-700 whitespace-nowrap">
+          <router-link
+            to="/skin-quiz"
+            class="whitespace-nowrap hover:text-brand-600"
+            :class="route.path === '/skin-quiz' ? 'text-brand-600' : 'text-gray-600'"
+          >
             SKIN QUIZ
           </router-link>
         </div>
